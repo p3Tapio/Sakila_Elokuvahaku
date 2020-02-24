@@ -19,53 +19,39 @@
                 </fieldset>
             </form>
         </div>
-        <table class="table table-hover">
-                 <thead> 
-                    <tr class="table-primary"><td>Nimi</td><td>Kuvaus</td><td>Ikäraja</td><td>Julkaisuvuosi</td></tr>
-                    </thead>
-                 <tbody>
-                    <?php
-                        if (isset($_POST["submit"]) && $_POST["haku"]!="") { 
-                            $haku = "%".strip_tags($_POST["haku"])."%";
-                            $sql = "SELECT * FROM film WHERE title LIKE '$haku'";
-                            createTable($sql);     
-                        }      
-                    ?>
-                </tbody>
-        </table>
-    </div>
+                
+    <?php
+    if (isset($_POST["submit"]) && $_POST["haku"]!="") { 
+        $haku = "%".strip_tags($_POST["haku"])."%";
+        $sql = "SELECT * FROM film WHERE title LIKE '$haku'";
+        createCards($sql);     
+    }      
 
-<?php
-    function createTable($sqlQuery) {
+    function createCards($sqlQuery) {
 
         $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");;
         $yhteys->set_charset("utf8");
         $tulokset = $yhteys->query($sqlQuery); 
 
-
         if (isset($_POST["submit"])) { 
-    
-
-            $taulu = "<tr>"; 
-
              if($tulokset->num_rows) {
-                echo "<h4>Hakutuloksia ".$tulokset->num_rows." kpl.</h4>"; 
-
+                echo "<h4>Hakutuloksia ".$tulokset->num_rows." kpl.</h4><br>"; 
+                $kortti ="<div class = \"row\">";
                 while($rivi = $tulokset->fetch_assoc()) { 
-                    $taulu .= "<td>".$rivi["title"]."</td><td>".$rivi["description"]."</td><td>".$rivi["rating"]."</td><td>".$rivi["release_year"]."</tr>";        
+                    $kortti .= "<div class=\"card border-primary mb-3\" style=\"max-width: 20rem; margin: 5px;\">"; 
+                    $kortti .= "<div class=\"card-header\">".$rivi["release_year"]." (".$rivi["rating"].")</div>";
+                    $kortti .= "<div class=\"card-body\">";
+                    $kortti .= "<h4 class=\"card-title\">".$rivi["title"]."</h4>";
+                    $kortti .= "<p class=\"card-text\">".$rivi["description"]."</p></div></div>";
+                    
                  }   
-                echo $taulu;
+                 echo $kortti."</div>";
              } else {
-                  echo "<h4><strong>Ei hakutuloksia.</strong></h4>";
+                  echo "<h4>Ei hakutuloksia.</h4>";
             
             }
         }
-
-
     }
-
-
-
 ?>
 </body>
 </html>
