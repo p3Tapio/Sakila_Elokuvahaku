@@ -29,7 +29,7 @@
 
     function createCards($sqlQuery) {
 
-        $yhteys = new mysqli("127.0.0.5", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");;
+        $yhteys = new mysqli("127.0.0.1", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");;
         $yhteys->set_charset("utf8");
         $tulokset = $yhteys->query($sqlQuery); 
 
