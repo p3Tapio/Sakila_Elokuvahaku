@@ -18,7 +18,7 @@
             <legend>Hae elokuvia</legend>
             <fieldset>
                 <div class="form-group">
-                        <input type="text" name="haku" class="form-control-lg" id="staticEmail" placeholder="Hakukenttä"><br>
+                        <input type="text" name="haku" class="form-control-lg" placeholder="Hakukenttä"><br>
                         <input type="submit" name="submit" class="btn btn-outline-primary btn-lg" value="hae" style="margin-top: 5px"/> 
                 </div>
             </fieldset>
