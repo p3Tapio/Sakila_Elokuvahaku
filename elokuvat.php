@@ -19,7 +19,7 @@
                 </fieldset>
             </form>
         </div>
-                
+         <hr>      
     <?php
     if (isset($_POST["submit"]) && $_POST["haku"]!="") { 
         $haku = "%".strip_tags($_POST["haku"])."%";
