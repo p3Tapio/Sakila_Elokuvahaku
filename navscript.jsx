@@ -1,6 +1,5 @@
 class NavBar extends React.Component {
     render() {
-        
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,6 +12,9 @@ class NavBar extends React.Component {
                     </li>
                     <li className="nav-item">
                     <a className="nav-link" href="./genret.php">Genret</a>
+                    </li>
+                    <li className="nav-item">
+                    <a className="nav-link" href="./lisaaleffa.php">Lisää elokuva</a>
                     </li>
                 </ul>
                 </div>

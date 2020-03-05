@@ -33,8 +33,8 @@ if (isset($_POST["submit"]) && $_POST["haku"]!="") {
 }      
 
 function createCards($sqlQuery) {
-    $yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
-    // $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
+    //$yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
+    $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
     $yhteys->set_charset("utf8");
     $tulokset = $yhteys->query($sqlQuery); 
 
@@ -54,6 +54,7 @@ function createCards($sqlQuery) {
                 echo "<h4>Ei hakutuloksia.</h4>";        
         }
     }
+    mysqli_close($yhteys);
 }
 ?>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

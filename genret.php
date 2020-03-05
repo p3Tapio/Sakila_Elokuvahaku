@@ -12,15 +12,14 @@
 </head>
 <body>
 <div id = "nav"></div>
+
 <div class="container" style="margin-top: 25px;">
     <div class="row">
         <form class="col-sm-12" method="post">
             <legend>Hae elokuvia</legend>
             <fieldset>
                 <div class="form-group">
-                <?php
-                    createButtons(); 
-                    ?>
+                <?php  createButtons();  ?>
                 </div>
             </fieldset>
         </form>
@@ -38,10 +37,11 @@
             while($rivi = $tulokset->fetch_assoc()) { 
                echo "<input type=\"submit\" name=\"".$rivi['name']."\" class=\"btn btn-outline-primary btn-sm\" value=\"".$rivi['name']."\" style=\"margin-top: 5px\"/>\n";  
             }
+            mysqli_close($yhteys);
         }
        function connect() {
-            $yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
-            // $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
+            //$yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
+            $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
             $yhteys->set_charset("utf8");
             return $yhteys; 
         }
@@ -69,6 +69,7 @@
                     echo "<h4>Ei hakutuloksia.</h4>";        
             }
             }
+            mysqli_close($yhteys);
         }
 
         function generateQuery() {
