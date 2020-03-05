@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -96,7 +96,6 @@
             $ika = strip_tags($_POST["ikaraja"]);
             $features=(array)$_POST['specialfeatures'];
             $feats = implode(",", $features);
-            echo $feats; 
         } else {
             echo "Täytä kaikki kentät!"; 
         }
