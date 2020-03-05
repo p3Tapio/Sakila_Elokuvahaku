@@ -40,8 +40,8 @@
             mysqli_close($yhteys);
         }
        function connect() {
-            //$yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
-            $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
+            $yhteys = new mysqli("127.0.0.1:51034", "azure", "6#vWHD_$", "sakila") or die("yhteyden muodostus epäonnistui");
+            // $yhteys = new mysqli("localhost", "root", "", "sakila") or die("yhteyden muodostus epäonnistui");
             $yhteys->set_charset("utf8");
             return $yhteys; 
         }
