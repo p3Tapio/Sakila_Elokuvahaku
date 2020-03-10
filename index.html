@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sakila-React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <script src="maintable.jsx" type="text/babel"></script>
+    <script src="genret.jsx" type="text/babel"></script>
+    <script src="hakunimella.jsx" type="text/babel"></script>
+    <link rel="stylesheet" href="tyyli.css">
+</head>
+
+<body>
+
+    <div id='root'></div>
+
+    <script type="text/javascript">
+  
+
+
+    </script>
+    <script type="text/babel">
+
+    class LoginCheck extends React.Component {
+
+        constructor(props) {
+            super(props);
+            this.state = { logged: false}
+        }
+
+        render() {
+            if(this.state.logged) return <Nav login="true"/>;    
+            else return <Nav login="false"/>;
+        }
+    }
+
+    class Nav extends React.Component {
+        constructor(props) {
+            super(props); 
+            this.state = {
+                render : '',
+            }
+        }
+        handleClickElokuvat = () => {
+            this.setState({render: "elokuvaTk"});
+        }
+        handleClickNimella = () => {
+            this.setState({render: "hakuNimella"});
+        }
+        handleClickGenret = () => {
+            this.setState({render: "genret"});
+        }
+        render() {
+
+            return (
+                <div>
+                    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                        </button>   
+                        <div className="collapse navbar-collapse" id="navbarColor01">
+                            <ul className="navbar-nav mr-auto">
+                                <li className="nav-item">
+                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickElokuvat}>Elokuvatietokanta</span>
+                                </li>
+                                <li className="nav-item">
+                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickNimella}>Haku nimellä</span>
+                                </li>
+                                <li className="nav-item">
+                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickGenret}>Genret</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <App content={this.state.render}/>
+                </div>
+            );
+        }
+    }
+
+    class App extends React.Component { 
+
+        render() {
+            switch(this.props.content) {
+                case 'elokuvaTk':
+                    return <MainTable/>; 
+                case 'hakuNimella':
+                    return <HakuNimella/>; 
+                case 'genret':
+                    return <Genret/>; 
+                default:
+                    return <MainTable/>; 
+            }
+        }
+    }
+   
+    ReactDOM.render (
+        <Nav/>,
+        document.getElementById("root")
+    )
+    
+</script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+<!-- 
+ Modal luokka joka antaa propin naville sen mukaan onko kirjautuminen ok ? 
+ var login; 
+         if(this.state.signed) login = <App content={this.state.render}/>; 
+         else login = <Modal signed = {this.state.signed}/>
+ -->
+
+<!-- var show; 
+if(this.props.login)  <App content={this.state.render}/>;
+else show = <div id="myModal" className="modal fade show" style={{display:"block"}}>
+            <div className="modal-content">
+            <span className="close">&times;</span>
+            <p>Some text in the Modal..</p>
+            </div></div>; -->

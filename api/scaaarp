@@ -1,0 +1,27 @@
+// SELECT * from film INNER JOIN language on film.language_id = language.language_id LIMIT 10, 20 
+
+
+TOIMIVA: 
+
+<?php
+    $yhteys = new mysqli("localhost", "root", "", "sakila") or die("Connection fail ".mysqli_connect_error());
+    $yhteys->set_charset("utf8");
+
+        $q = "SELECT * from film INNER JOIN language on film.language_id = language.language_id";
+        $tulokset = $yhteys->query($q); 
+
+        if($tulokset) {
+            echo '[';
+            for($i = 0; $i < mysqli_num_rows($tulokset); $i++) {
+                echo ($i>0?',':'').json_encode(mysqli_fetch_object($tulokset)); 
+            }
+            echo ']';
+
+        } else {
+            http_response_code(404); 
+            die(mysqli_error($yhteys));
+        }
+  
+    mysqli_close($yhteys);
+?>
+
