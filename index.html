@@ -11,34 +11,91 @@
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-modal/3.11.2/react-modal.min.js"></script>
     <script src="maintable.jsx" type="text/babel"></script>
     <script src="genret.jsx" type="text/babel"></script>
     <script src="hakunimella.jsx" type="text/babel"></script>
     <link rel="stylesheet" href="tyyli.css">
 </head>
-
 <body>
 
     <div id='root'></div>
-
-    <script type="text/javascript">
-  
-
-
-    </script>
     <script type="text/babel">
 
     class LoginCheck extends React.Component {
-
-        constructor(props) {
+            constructor(props) {
             super(props);
-            this.state = { logged: false}
+            this.state = {
+                isModalOpen: true,
+                kayttaja:'',
+                salasana:'',
+                logOk: ''
+            };    
+            this.handleChangeInput = this.handleChangeInput.bind(this); 
+            this.handleSubmit = this.handleSubmit.bind(this); 
         }
-
+        handleCloseModal() {
+            alert("Tervetuloa!"); 
+            this.setState({logOk:true}); 
+            if(this.state.logOk) this.setState({isModalOpen: false});      
+        }      
+        handleChangeInput(ev) {
+            this.setState({[ev.target.id]:ev.target.value})
+        }
+        handleSubmit(event) { 
+            event.preventDefault(); 
+            this.checkUser(); 
+        }
+        checkUser() {
+            const user = {
+                kayttaja: this.state.kayttaja,
+                salasana: this.state.salasana
+            }
+            const userJson = JSON.stringify(user); 
+            console.log(userJson); 
+            axios({
+                method: 'post',
+                url: '/sakila/api/films.php?call=user',
+                data: userJson,
+                config: {headers: {'Content-Type':'application/json'}}
+            }).then(res => {
+                if(res.data==="Ok") this.handleCloseModal(); 
+                else alert("Virheellinen salasana tai käyttäjätunnus!"); 
+            });
+        }
         render() {
-            if(this.state.logged) return <Nav login="true"/>;    
-            else return <Nav login="false"/>;
+
+            const modalStyle = {
+                content : {
+                    width: "350px", height: "300px",
+                    top: '50%', left: '50%', right:'auto', bottom: 'auto',
+                    marginRight: '-50%', transform: 'translate(-50%, -50%)'
+                }
+            };
+            
+            if(!this.state.logOk) {        
+                return (
+                    <ReactModal style={modalStyle} isOpen={this.state.isModalOpen} shouldCloseOnOverlayClick={false} ariaHideApp={false}
+                    onRequestClose={(event) => {if (event.type === 'keydown' && event.keyCode === 27) return}} >
+                        <div className = "Modal">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Login</h5>
+                        </div>
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="modal-body">  
+                                    <input type="text" className="form-control" onChange={this.handleChangeInput} style = {{width:"240px"}} placeholder="Käyttäjätunnus" id="kayttaja" /><br/>
+                                    <input type="password" className="form-control" onChange={this.handleChangeInput} style = {{width:"240px"}} placeholder="Salasana" id="salasana" />
+                            </div>
+                            <div className="modal-footer" style={{height:"1px"}}>
+                                <button  type="submit" className="btn btn-primary" >Login</button>
+                            </div>
+                        </form>
+                        </div>
+                    </ReactModal>
+                )
+            } else {
+                return <Nav/>
+            }  
         }
     }
 
@@ -49,14 +106,8 @@
                 render : '',
             }
         }
-        handleClickElokuvat = () => {
-            this.setState({render: "elokuvaTk"});
-        }
-        handleClickNimella = () => {
-            this.setState({render: "hakuNimella"});
-        }
-        handleClickGenret = () => {
-            this.setState({render: "genret"});
+        handleClickLink = (ev) => {
+            this.setState({render: ev.target.id});
         }
         render() {
 
@@ -69,13 +120,13 @@
                         <div className="collapse navbar-collapse" id="navbarColor01">
                             <ul className="navbar-nav mr-auto">
                                 <li className="nav-item">
-                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickElokuvat}>Elokuvatietokanta</span>
+                                <span style={{cursor:"pointer"}} className="nav-link" id="elokuvaTk" onClick={this.handleClickLink}>Elokuvatietokanta</span>
                                 </li>
                                 <li className="nav-item">
-                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickNimella}>Haku nimellä</span>
+                                <span style={{cursor:"pointer"}} className="nav-link"  id="hakuNimella" onClick={this.handleClickLink}>Haku nimellä</span>
                                 </li>
                                 <li className="nav-item">
-                                <span style={{cursor:"pointer"}} className="nav-link"  onClick={this.handleClickGenret}>Genret</span>
+                                <span style={{cursor:"pointer"}} className="nav-link" id="genret" onClick={this.handleClickLink}>Genret</span>
                                 </li>
                             </ul>
                         </div>
@@ -87,7 +138,6 @@
     }
 
     class App extends React.Component { 
-
         render() {
             switch(this.props.content) {
                 case 'elokuvaTk':
@@ -101,9 +151,8 @@
             }
         }
     }
-   
     ReactDOM.render (
-        <Nav/>,
+        <LoginCheck/>,
         document.getElementById("root")
     )
     
@@ -118,19 +167,4 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 </body>
-
 </html>
-<!-- 
- Modal luokka joka antaa propin naville sen mukaan onko kirjautuminen ok ? 
- var login; 
-         if(this.state.signed) login = <App content={this.state.render}/>; 
-         else login = <Modal signed = {this.state.signed}/>
- -->
-
-<!-- var show; 
-if(this.props.login)  <App content={this.state.render}/>;
-else show = <div id="myModal" className="modal fade show" style={{display:"block"}}>
-            <div className="modal-content">
-            <span className="close">&times;</span>
-            <p>Some text in the Modal..</p>
-            </div></div>; -->

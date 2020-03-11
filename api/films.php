@@ -1,8 +1,8 @@
 <?php
-    // TODO: if(leffakannassa) { }
+    // TODO: 
     // Rating ja original language puuttuu -->  $ika = strip_tags($_POST["ikaraja"]);
-    // tallennuksessa , -> . välimerkkimuunnos tai tarkistus 
-
+    // tallennuksessa , -> . välimerkkitarkistus/-muunnos
+    // Tässä / phpmyadmin: userCheck on nyt case insensitive  
 
     if(isset($_GET['call'])) {
         switch($_GET['call']) {
@@ -24,6 +24,9 @@
             case 'setfilm':
                 setFilm(); 
                 break; 
+            case 'user':
+                checkUser();
+                break; 
             default:
                 http_response_code(404); 
             } 
@@ -31,7 +34,9 @@
             http_response_code(404); 
         }
 
-// -------------------------------------------------------------
+
+// -----------------------FUNKS--------------------------------------
+
     function getAllFilms() {
 
         $yhteys = connect(); 
@@ -82,7 +87,9 @@
         
         $_POST = json_decode(file_get_contents('php://input'), true);
         $resposeMsg ="";
-        if(isset($_POST["kuvaus"])&& isset($_POST["vuosi"])&& isset($_POST["aika"]) && isset($_POST["vuokrahinta"])&& isset($_POST["pituus"])&& isset($_POST["korvaushinta"])&& isset($_POST["kieli"])&& isset($_POST["features"])) {
+
+        if(strlen($_POST["kuvaus"])>0 && strlen($_POST["vuosi"])>0 && strlen($_POST["aika"])>0 && strlen($_POST["vuokrahinta"])>0
+        && strlen($_POST["pituus"])>0 && strlen($_POST["korvaushinta"])>0 && strlen($_POST["kieli"])>0 && count($_POST["features"])>0) {
             $nimi = strip_tags($_POST["nimi"]);
             $kuvaus = strip_tags($_POST["kuvaus"]);
             $vuosi = (int)$_POST["vuosi"];
@@ -91,28 +98,55 @@
             $pituus = (int)$_POST["pituus"]; 
             $korvaus = (float)$_POST["korvaushinta"]; 
             $kieli = (int)$_POST["kieli"];
-    
             $features=(array)$_POST['features'];
             $feats = implode(",", $features);
-            $resposeMsg = "muuttujiin siirto ok"; 
         } else {
-            $resposeMsg = "Täytä kaikki kentät"; 
+            $resposeMsg = "Täytä kaikki kentät!"; 
+            echo $resposeMsg;
+            exit(); 
         }  
-        $yhteys = connect(); 
-        // if kannassa niin $resposeMsg = "ON JO!"; 
-        $q = "INSERT INTO film  (title,description,release_year,language_id, rental_duration,rental_rate,length,replacement_cost,special_features)
-        VALUES ('$nimi','$kuvaus','$vuosi', '$kieli','$aika','$hinta','$pituus', '$korvaus', '$feats')";
 
-        if($yhteys->query($q)) {
-            $resposeMsg ="Tallennus ok";
-        } else {
-            $resposeMsg = "Tallennus epäonnistui ".$yhteys->error;  
+        $yhteys = connect(); 
+        $checkDb = $yhteys->query("SELECT * FROM film WHERE title ='".$nimi."'"); 
+
+         if(mysqli_num_rows($checkDb)>0) {
+             $resposeMsg = "Elokuva on jo tietokannassa!";
+         } else {
+            $q = "INSERT INTO film  (title,description,release_year,language_id, rental_duration,rental_rate,length,replacement_cost,special_features)
+            VALUES ('$nimi','$kuvaus','$vuosi', '$kieli','$aika','$hinta','$pituus', '$korvaus', '$feats')";
+
+            if($yhteys->query($q)) {
+                $resposeMsg ="Tiedot välitetty eteenpäin";
+            } else {
+                $resposeMsg = "Tallennus epäonnistui:\n".$yhteys->error."\n".$q;  
+          }
         }
 
         echo $resposeMsg; 
         mysqli_close($yhteys);
  
     } 
+    function checkUser() {
+      
+        $_POST = json_decode(file_get_contents('php://input'), true);
+        $resposeMsg ="";
+        $yhteys = connect(); 
+        $kayttaja = strip_tags($_POST['kayttaja']);
+        $salasana = strip_tags($_POST['salasana']); 
+        $resposeMsg = "Response ".$kayttaja." ".$salasana; 
+
+        $q = $yhteys->query("SELECT * FROM users WHERE Username ='".$kayttaja."' AND Password ='".$salasana."'"); 
+       
+        if(mysqli_num_rows($q)>0) {
+            $resposeMsg = "Ok";
+        } else {
+            $resposeMsg = "Fail"; 
+        }
+
+        echo $resposeMsg; 
+        mysqli_close($yhteys);
+
+    }
     function createJson($toJson, $yhteys) {
 
         if($toJson && $yhteys) {
@@ -128,6 +162,7 @@
         mysqli_close($yhteys);
     }
     function connect() {
+    
         $yhteys = new mysqli("localhost", "root", "", "sakila") or die("Connection fail ".mysqli_connect_error());
         $yhteys->set_charset("utf8");
         return $yhteys;

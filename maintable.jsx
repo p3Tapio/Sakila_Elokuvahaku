@@ -1,4 +1,4 @@
-// TODO: tallennuksen tulos modaliin tms tai ainakin forward takaisin kaikki elokuvat tauluun 
+// TODO: tallennuksen tulos alerttiin / modaliin tms tai ainakin forward takaisin kaikki elokuvat tauluun 
 
 class MainTable extends React.Component {
 
@@ -39,7 +39,7 @@ class LisaaElokuva extends React.Component {
         super(props);
         this.state = { 
             kielet: [],
-            nimi: "", kuvaus: "", vuosi: "", kieli: "", aika:"", vuokrahinta:"", pituus:"", korvaushinta:"", 
+            nimi: "", kuvaus: "", vuosi: "", kieli: "", vuokraAika:"", vuokrahinta:"", pituus:"", korvaushinta:"", 
             features: [],
             response: ''   
          };
@@ -74,21 +74,20 @@ class LisaaElokuva extends React.Component {
             kuvaus: this.state.kuvaus,
             vuosi: this.state.vuosi,
             kieli: this.state.kieli, 
-            aika: this.state.aika, 
+            aika: this.state.vuokraAika, 
             vuokrahinta: this.state.vuokrahinta, 
             pituus: this.state.pituus, 
             korvaushinta: this.state.korvaushinta,
             features: this.state.features
         }
         const filmJson = JSON.stringify(film); 
-
+        console.log(filmJson); 
         axios({
             method: 'post',
             url: '/sakila/api/films.php?call=setfilm',
             data: filmJson,
             config: { headers: {'Content-Type': 'application/json' }}
         }).then(res => {
-            console.log(res.data); 
             this.setState({response : res.data}); 
             alert(this.state.response); 
         });
@@ -100,14 +99,14 @@ class LisaaElokuva extends React.Component {
                     <div class="form-group" style={{ width: "240px", margin: "8px" }}>
                         <input type="text" onChange ={this.handleInputChange} className="form-control" id="nimi" placeholder="Nimi" />
                         <textarea type="text"  onChange ={this.handleInputChange} className="form-control" id="kuvaus" rows="3" placeholder="Kuvaus"></textarea>
-                        <input type="text" onChange ={this.handleInputChange} id="julkaisuvuosi" className="form-control" placeholder="Julkaisuvuosi" />
+                        <input type="text" onChange ={this.handleInputChange} id="vuosi" className="form-control" placeholder="Julkaisuvuosi" />
                         <select onChange={this.handleInputChange} className="form-control" id="kieli">
                             <option selected="kieli">Kieli</option>
                                 {this.state.kielet.map(kieli =>
                                     <option key={kieli.language_id} value={kieli.language_id}>{kieli.name}</option>
                                 )}
                         </select>
-                        <input type="text" onChange ={this.handleInputChange} id="vuokra-aika" className="form-control" placeholder="Vuokra-aika"/>
+                        <input type="text" onChange ={this.handleInputChange} id="vuokraAika" className="form-control" placeholder="Vuokra-aika"/>
                         <input type="text" onChange ={this.handleInputChange} id="vuokrahinta" className="form-control" placeholder="Vuokrahinta"/>
                         <input type="text" onChange ={this.handleInputChange} id="pituus" className="form-control" placeholder="Pituus"/>
                         <input type="text" onChange ={this.handleInputChange} id="korvaushinta" className="form-control" placeholder="Korvaushinta"/>
@@ -198,26 +197,3 @@ class AllFilms extends React.Component {
     }
 
 }
-
-
-// setFilm() {
-//     const film = {
-//         nimi: this.state.nimi,
-//         kuvaus: this.state.kuvaus,
-//         vuosi: this.state.vuosi,
-//         kieli: this.state.kieli, 
-//         aika: this.state.aika, 
-//         vuokrahinta: this.state.vuokrahinta, 
-//         pituus: this.state.pituus, 
-//         korvaushinta: this.state.korvaushinta,
-//         features: this.state.features
-//     }
-//     const filmJson = JSON.stringify(film); 
-// //    console.log("FilmJson: " + filmJson); 
-
-//     axios.post('/sakila/api/films.php?call=setfilm', {filmJson}) 
-//         .then(res => {
-//             console.log("Axios res:" +res);
-//             console.log("Axios res.data:" +res.data); 
-//         });
-// }
